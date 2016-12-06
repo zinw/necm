@@ -1,0 +1,24 @@
+{
+  "name": "necm",
+  "version": "0.0.1",
+  "description": "NetEase Cloud Music",
+  "main": "built/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zinw/necm.git"
+  },
+  "keywords": [
+    "NetEase Cloud Music",
+    "TypeScript",
+    "node"
+  ],
+  "author": "Zinway Liu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zinw/necm/issues"
+  },
+  "homepage": "https://github.com/zinw/necm#readme"
+}
