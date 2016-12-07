@@ -1,6 +1,6 @@
 {
   "name": "necm",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "NetEase Cloud Music",
   "main": "bin/necm",
   "scripts": {
