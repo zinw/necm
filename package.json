@@ -2,7 +2,7 @@
   "name": "necm",
   "version": "0.0.1",
   "description": "NetEase Cloud Music",
-  "main": "built/index.js",
+  "main": "bin/necm",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +12,7 @@
   },
   "keywords": [
     "NetEase Cloud Music",
-    "TypeScript",
+    "ECMAScript 6",
     "node"
   ],
   "author": "Zinway Liu",
