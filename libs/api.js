@@ -62,7 +62,7 @@ const lrc = (id, callback = null, lv = -1) => {
     })
 };
 
-const getPlayLists = (id, callback) => {
+const playLists = (id, callback) => {
     const option = deepCopy(globalOption)
     const url = `${origin}/api/playlist/detail?id=${id}`
     const method = 'get'
@@ -77,7 +77,7 @@ const getPlayLists = (id, callback) => {
     })
 };
 
-const getArtistAlbums = (id, callback, limit = 3, offset = 0) => {
+const artistAlbums = (id, callback, limit = 3, offset = 0) => {
     const option = deepCopy(globalOption)
     const url = `${origin}/api/artist/albums/${id}?offset=${offset}&limit=${limit}`
     const method = 'GET'
@@ -92,7 +92,7 @@ const getArtistAlbums = (id, callback, limit = 3, offset = 0) => {
     })
 };
 
-const getAlbums = (id, callback) => {
+const albums = (id, callback) => {
     const option = deepCopy(globalOption)
     const url = `${origin}/api/album/${id}`
     const method = 'get'
@@ -112,7 +112,7 @@ export default {
     search,
     song,
     lrc,
-    getPlayLists,
-    getArtistAlbums,
-    getAlbums
+    playLists,
+    artistAlbums,
+    albums
 }
