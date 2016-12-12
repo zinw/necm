@@ -1,6 +1,6 @@
-# N.E.C.M.
+# N.E.C.M. [![Build Status][travis-image]][travis-url]
 
-[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/zinw/necm/master/LICENSE)
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url] [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/zinw/necm/master/LICENSE)
 
 [npm-url]: https://npmjs.org/package/necm
 [downloads-image]: http://img.shields.io/npm/dm/necm.svg
