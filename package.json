@@ -1,10 +1,11 @@
 {
   "name": "necm",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "NetEase Cloud Music",
-  "main": "libs/necm.js",
+  "main": "src/necm.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src -d dist",
+    "test": "jest"
   },
   "bin": {
     "necm": "bin/necm"
@@ -15,7 +16,7 @@
   },
   "keywords": [
     "NetEase Cloud Music",
-    "ECMAScript 6",
+    "ES6",
     "node"
   ],
   "author": "Zinway Liu",
@@ -25,7 +26,24 @@
   },
   "homepage": "https://github.com/zinw/necm#readme",
   "dependencies": {
-    "reify": "^0.4.4",
-    "request": "^2.79.0"
+    "request": "*"
+  },
+  "devDependencies": {
+    "babel-cli": "*",
+    "babel-preset-env": "*",
+    "babel-jest": "*",
+    "jest-cli": "*"
+  },
+  "babel": {
+    "comments": false,
+    "minified": true,
+    "presets": [
+      "env"
+    ]
+  },
+  "jest": {
+    "testPathDirs": [
+      "test"
+    ]
   }
 }

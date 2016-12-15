@@ -1,36 +1,42 @@
 /**
  * Created by Zinway on 2016/12/9.
  */
-import NECM from '../libs/necm'
+import api from '../src/api'
 
-const necm = new NECM();
+describe('API测试', () => {
+    it('api.search测试', () => {
+        api.search("演员", data => {
+            expect(data[0].name).toBe("演员")
+        })
+    })
 
-necm.api.search('演员', data => {
-    console.log("################Search API#################");
-    console.log(data)
-});
+    it('api.song测试', () => {
+        api.song('32507038', data => {
+            expect(data.songs[0].name).toBe('演员')
+        })
+    })
 
-necm.api.song('32507038', data => {
-    console.log("################Song API#################");
-    console.log(data)
-});
+    it('api.lrc测试', () => {
+        api.lrc('32507038', data => {
+            expect(data.code).toBe(200)
+        })
+    })
 
-necm.api.lrc('32507038', data => {
-    console.log("################Lrc API#################");
-    console.log(data)
-});
+    it('api.playLists测试', () => {
+        api.playLists('1', data => {
+            expect(data.code).toBe(200)
+        })
+    })
 
-necm.api.artistAlbums('9952', data => {
-    console.log('####################Artist Albums##############');
-    console.log(data)
-});
+    it('api.artistAlbums测试', () => {
+        api.artistAlbums('5781', data => {
+            expect(data.code).toBe(200)
+        })
+    })
 
-necm.api.albums('32311', data => {
-    console.log("####################Albums####################");
-    console.log(data)
-});
-
-necm.api.playLists('311785002', data => {
-    console.log("####################Playlists####################");
-    console.log(data)
+    it('api.albums测试', () => {
+        api.albums('3154175', data => {
+            expect(data.code).toBe(200)
+        })
+    })
 });
