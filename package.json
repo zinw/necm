@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/zinw/necm#readme",
   "dependencies": {
-    "request-promise-native": "*"
+    "request-promise-native": "*",
+    "blessed": "*"
   },
   "devDependencies": {
     "babel-cli": "*",
