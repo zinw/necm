@@ -8,7 +8,6 @@ class Ui {
         this.screen = blessed.screen({
             debug: true,
             warnings: true,
-            log: '/tmp/necm.log',
             dockBorders: true,
             smartCSR: true,
             fullUnicode: true,
@@ -56,36 +55,16 @@ class Ui {
             left: 'center',
             padding: 1,
             items: [
-                ' 0. 排行榜',
-                ' 1. 艺术家',
-                ' 2. 新碟上架',
-                ' 3. 精选歌单',
-                ' 4. 我的歌单',
-                ' 5. DJ节目',
-                ' 6. 打碟',
-                ' 7. 收藏',
-                ' 8. 占位符',
-                ' 9. 帮助',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
-                ' x. 占位符',
+                ' 0. loading',
+                ' 1. loading',
+                ' 2. loading',
+                ' 3. loading',
+                ' 4. loading',
+                ' 5. loading',
+                ' 6. loading',
+                ' 7. loading',
+                ' 8. loading',
+                ' 9. loading',
             ],
             style: {
                 fg: 'blue',
@@ -104,8 +83,6 @@ class Ui {
         this.screen.append(this.list);
 
         this.list.on('select', (item, index) => {
-            this.screen.log(`index -> ${index}`);
-            this.screen.log(item);
             this.list.setLabel(` ${item.getText().split('.').slice(-1)[0].trim()} `);
             this.screen.render();
         });
@@ -151,8 +128,5 @@ class Ui {
         this.screen.append(this.searchBox);
     }
 }
-
-// test
-const ui = new Ui();
 
 export default Ui
