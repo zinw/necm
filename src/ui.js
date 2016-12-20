@@ -41,6 +41,10 @@ class Ui {
         this.screen.render();
     }
 
+    _bind(...methods) {
+        methods.forEach((method) => this[method] = this[method].bind(this));
+    }
+
     initListWidget() {
         this.list = blessed.list({
             mouse: true,
@@ -81,11 +85,6 @@ class Ui {
         });
 
         this.screen.append(this.list);
-
-        this.list.on('select', (item, index) => {
-            this.list.setLabel(` ${item.getText().split('.').slice(-1)[0].trim()} `);
-            this.screen.render();
-        });
     }
 
     initSearchWidget() {

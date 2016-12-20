@@ -5,6 +5,53 @@ import request from 'request-promise-native'
 import {origin, globalOption} from './config'
 import {deepCopy} from './util'
 
+// 歌曲榜单地址
+const top_list = [
+    ['云音乐飙升榜', 19723756],
+    ['云音乐新歌榜', 3779629],
+    ['网易原创歌曲榜', 2884035],
+    ['云音乐热歌榜', 3778678],
+    ['云音乐电音榜', 10520166],
+    ['UK排行榜周榜', 180106],
+    ['美国Billboard周榜', 60198],
+    ['KTV嗨榜', 21845217],
+    ['iTunes榜', 11641012],
+    ['Hit FM Top榜', 120001],
+    ['日本Oricon周榜', 60131],
+    ['韩国Melon排行榜周榜', 3733003],
+    ['韩国Mnet排行榜周榜', 60255],
+    ['韩国Melon原声周榜', 46772709],
+    ['中国TOP排行榜(港台榜)', 112504],
+    ['中国TOP排行榜(内地榜)', 64016],
+    ['香港电台中文歌曲龙虎榜', 10169002],
+    ['华语金曲榜', 4395559],
+    ['中国嘻哈榜', 1899724],
+    ['法国 NRJ EuroHot 30周榜', 27135204],
+    ['台湾Hito排行榜', 112463],
+    ['Beatport全球电子舞曲榜', 3812895]
+];
+
+const getTopListNames = () => {
+    return top_list.map((l, i) => ` ${i}. ${l[0]}`)
+};
+
+const requestTopSongList = (index = 0) => {
+    const option = deepCopy(globalOption);
+    const url = `${origin}/discover/toplist?id=${top_list[index][1]}`;
+    const method = 'GET';
+    Object.assign(option, {url, method});
+    return request(option)
+        .then(body => {
+            let re = new RegExp(/>\[.*\]</);
+            return JSON.parse(body.match(re)[0].slice(1, -1));
+        })
+        .catch(e => e);
+};
+
+const getTopSongList = async(index = 0) => {
+    return await requestTopSongList(index)
+};
+
 /**
  * 根据id获取歌曲
  * @param {number} id 歌曲id
@@ -123,6 +170,8 @@ const albums = (id) => {
 
 
 export default {
+    getTopListNames,
+    getTopSongList,
     search,
     song,
     lrc,
