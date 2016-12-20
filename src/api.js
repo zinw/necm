@@ -2,6 +2,7 @@
  * Created by Zinway on 2016/12/9.
  */
 import request from 'request-promise-native'
+import crypto from 'crypto'
 import {origin, globalOption} from './config'
 import {deepCopy} from './util'
 
@@ -69,6 +70,43 @@ const song = (id) => {
 };
 
 /**
+ * 字符串转为TypedArray对象
+ * @param {string} str
+ * @returns {Uint8Array}
+ */
+function str2ta(str) {
+    let buf = new ArrayBuffer(str.length);
+    let bufView = new Uint8Array(buf);
+    str.split('').map((s, i) => {
+        bufView[i] = s.charCodeAt()
+    });
+    return bufView;
+}
+
+/**
+ * 根据dfsId获取mp3Url加密字段
+ * @param {string} dfsId 歌曲id
+ */
+const encodeId = (dfsId) => {
+    let a1 = str2ta('3go8&$8*3*3h0k(2)2'),
+        a2 = str2ta(dfsId),
+        a1l = a1.length;
+    a2.map((c, i) => {
+        a2[i] = c ^ a1[i % a1l]
+    });
+    let m = crypto.createHash('md5');
+    m.update(a2);
+    return m.digest().toString('base64').replace(/\//g, '_').replace(/\+/g, '-');
+};
+
+/**
+ * 获取高音质mp3Url
+ * @param {object} song
+ */
+const getMp3Url = (song) => {
+};
+
+/**
  * 搜索
  * @param {string} name 搜索内容
  * @param {number} type 搜索类型：单曲(1)，歌手(100)，专辑(10)，歌单(1000)，用户(1002)
@@ -102,8 +140,8 @@ const search = (name = null, type = 1, onlySong = true, limit = 3, offset = 0) =
 };
 
 /**
- * 根据id获取歌单
- * @param {number} id 歌单id
+ * 根据id获取歌词
+ * @param {number} id 歌曲id
  * @param {number} lv
  */
 const lrc = (id, lv = -1) => {
@@ -172,8 +210,10 @@ const albums = (id) => {
 export default {
     getTopListNames,
     getTopSongList,
-    search,
     song,
+    encodeId,
+    getMp3Url,
+    search,
     lrc,
     playLists,
     artistAlbums,
