@@ -64,7 +64,7 @@ const song = (id) => {
     Object.assign(option, {url, method});
     return request(option)
         .then(body => {
-            return JSON.parse(body).songs
+            return JSON.parse(body).songs[0]
         })
         .catch(e => e);
 };
@@ -104,6 +104,18 @@ const encodeId = (dfsId) => {
  * @param {object} song
  */
 const getMp3Url = (song) => {
+    let music = {};
+    if (song.hasOwnProperty('hMusic')) {
+        music = song.hMusic
+    } else if (song.hasOwnProperty('mMusic')) {
+        music = song.mMusic
+    } else {
+        console.log(song.hasOwnProperty('hMusic'));
+        return song.mp3Url
+    }
+    let song_id = music.dfsId.toString();
+    let enc_id = encodeId(song_id);
+    return `http://m2.music.126.net/${enc_id}/${song_id}.mp3`
 };
 
 /**
@@ -151,7 +163,8 @@ const lrc = (id, lv = -1) => {
     Object.assign(option, {url, method});
     return request(option)
         .then(body => {
-            return JSON.parse(body).lrc.lyric
+            let l = JSON.parse(body);
+            return l.hasOwnProperty('lrc') ? l.lrc.lyric : 'no lyric'
         })
         .catch(e => e);
 };
@@ -211,7 +224,6 @@ export default {
     getTopListNames,
     getTopSongList,
     song,
-    encodeId,
     getMp3Url,
     search,
     lrc,
