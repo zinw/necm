@@ -1,11 +1,11 @@
 /**
  * Created by Zinway on 2016/12/9.
  */
-import api from './api'
+import Menu from './menu'
 
-class NECM {
+class NECM extends Menu {
     constructor() {
-        this.api = api;
+        super();
     }
 }
 
