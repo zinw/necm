@@ -5,17 +5,17 @@ import api from '../src/api'
 
 describe('API测试', () => {
     it('api.search测试', async () => {
-        let d = await api.search("演员")
-        expect(d[0].name).toBe('演员')
+        let d = await api.search('Victory')
+        expect(d[0].name).toBe('Victory')
     })
 
     it('api.song测试', async () => {
-        let d = await api.song('32507038')
-        expect(d[0].name).toBe('演员')
+        let d = await api.song('31654455')
+        expect(d.name).toBe('Victory')
     })
 
     it('api.lrc测试', async () => {
-        let d = await api.lrc('32507038')
+        let d = await api.lrc(31654455)
         expect(d).not.toBeNull()
     })
 
