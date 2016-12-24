@@ -33,8 +33,8 @@ class Menu extends Ui {
         });
     }
 
-    async topListDo(index = 0) {
-        this.playList = await api.getTopSongList(index);
+    topListDo(index = 0) {
+        this.playList = api.getTopSongList(index);
         this.songNames = this.playList.map((s, i) => {
             const {name, artists, album} = s;
             let _artists = artists.map(a => a.name).join(' & '),
@@ -43,13 +43,9 @@ class Menu extends Ui {
         });
         this.list.setItems(this.songNames);
         this.screen.render();
-        this.songsList = this.playList.map(async(s) => {
-            let {id} = s;
-            let song = await api.song(id);
-            return song
-        });
-        let player = new Player(this.songsList);
-        this.list.on('select', (item, index) => {
+        this.songIdList = this.playList.map((s) => s.id);
+        let player = new Player(this.songIdList);
+        this.list.once('select', (item, index) => {
             player.play(index)
         });
     }
@@ -57,9 +53,10 @@ class Menu extends Ui {
     initTopList() {
         this.list.setItems(api.getTopListNames());
         this.screen.render();
-        this.list.once('select', (item, index) => {
-            this.list.setLabel(` ${item.getText().split('.').slice(-1)[0].trim()} `);
-            this.topListDo(index);
+        this.list.once('select', async(item, index) => {
+            let title = ` ${item.getText().split('.').slice(-1)[0].trim()} `;
+            await this.topListDo(index);
+            this.list.setLabel(title);
             this.screen.render();
         });
     }
