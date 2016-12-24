@@ -1,10 +1,11 @@
 /**
  * Created by Zinway on 2016/12/9.
  */
-import request from 'request-promise-native'
 import crypto from 'crypto'
+import querystring from 'querystring'
 import {origin, globalOption} from './config'
-import {deepCopy} from './util'
+import {deepCopy, requestGet, requestGetRaw, requestPost} from './util'
+
 
 // 歌曲榜单地址
 const top_list = [
@@ -36,21 +37,12 @@ const getTopListNames = () => {
     return top_list.map((l, i) => ` ${i}. ${l[0]}`)
 };
 
-const requestTopSongList = (index = 0) => {
+const getTopSongList = (index = 0) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/discover/toplist?id=${top_list[index][1]}`;
-    const method = 'GET';
-    Object.assign(option, {url, method});
-    return request(option)
-        .then(body => {
-            let re = new RegExp(/>\[.*\]</);
-            return JSON.parse(body.match(re)[0].slice(1, -1));
-        })
-        .catch(e => e);
-};
-
-const getTopSongList = async(index = 0) => {
-    return await requestTopSongList(index)
+    let body = requestGetRaw(url, option);
+    let re = new RegExp(/>\[.*\]</);
+    return JSON.parse(body.match(re)[0].slice(1, -1));
 };
 
 /**
@@ -60,13 +52,7 @@ const getTopSongList = async(index = 0) => {
 const song = (id) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/api/song/detail?ids=%5B${id}%5d`;
-    const method = 'GET';
-    Object.assign(option, {url, method});
-    return request(option)
-        .then(body => {
-            return JSON.parse(body).songs[0]
-        })
-        .catch(e => e);
+    return requestGet(url, option).songs[0]
 };
 
 /**
@@ -110,13 +96,19 @@ const getMp3Url = (song) => {
     } else if (song.hasOwnProperty('mMusic')) {
         music = song.mMusic
     } else {
-        console.log(song.hasOwnProperty('hMusic'));
         return song.mp3Url
     }
     let song_id = music.dfsId.toString();
     let enc_id = encodeId(song_id);
     return `http://m2.music.126.net/${enc_id}/${song_id}.mp3`
 };
+
+/**
+ * 根据歌曲id获取高品质mp3Url
+ * @param {number} song_id 歌曲id
+ * @returns {string} mp3Url
+ */
+const getMp3UrlById = (song_id) => getMp3Url(song(song_id));
 
 /**
  * 搜索
@@ -129,26 +121,21 @@ const getMp3Url = (song) => {
 const search = (name = null, type = 1, onlySong = true, limit = 3, offset = 0) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/api/search/suggest/web`;
-    const form = {
+    const body = querystring.stringify({
         s: name,
         type,
         limit,
         offset
-    };
-    const method = 'POST';
-    Object.assign(option, {url, form, method});
-    return request(option)
-        .then(body => {
-            let info = JSON.parse(body);
-            let data;
-            if (onlySong) {
-                data = info.result.songs
-            } else {
-                data = {songs: info.result.songs, mvs: info.result.mvs}
-            }
-            return data
-        })
-        .catch(e => e);
+    });
+    Object.assign(option, {body});
+    let info = requestPost(url, option);
+    let data;
+    if (onlySong) {
+        data = info.result.songs
+    } else {
+        data = {songs: info.result.songs, mvs: info.result.mvs}
+    }
+    return data
 };
 
 /**
@@ -159,14 +146,8 @@ const search = (name = null, type = 1, onlySong = true, limit = 3, offset = 0) =
 const lrc = (id, lv = -1) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/api/song/lyric?lv=${lv}&id=${id}`;
-    const method = 'GET';
-    Object.assign(option, {url, method});
-    return request(option)
-        .then(body => {
-            let l = JSON.parse(body);
-            return l.hasOwnProperty('lrc') ? l.lrc.lyric : 'no lyric'
-        })
-        .catch(e => e);
+    let l = requestGet(url, option);
+    return l.hasOwnProperty('lrc') ? l.lrc.lyric : 'no lyric'
 };
 
 /**
@@ -176,13 +157,7 @@ const lrc = (id, lv = -1) => {
 const playLists = (id) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/api/playlist/detail?id=${id}`;
-    const method = 'GET';
-    Object.assign(option, {url, method});
-    return request(option)
-        .then(body => {
-            return JSON.parse(body).result
-        })
-        .catch(e => e);
+    return requestGet(url, option).result;
 };
 
 /**
@@ -194,13 +169,7 @@ const playLists = (id) => {
 const artistAlbums = (id, limit = 3, offset = 0) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/api/artist/albums/${id}?offset=${offset}&limit=${limit}`;
-    const method = 'GET';
-    Object.assign(option, {url, method});
-    return request(option)
-        .then(body => {
-            return JSON.parse(body)
-        })
-        .catch(e => e);
+    return requestGet(url, option);
 };
 
 /**
@@ -210,13 +179,7 @@ const artistAlbums = (id, limit = 3, offset = 0) => {
 const albums = (id) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/api/album/${id}`;
-    const method = 'GET';
-    Object.assign(option, {url, method});
-    return request(option)
-        .then(body => {
-            return JSON.parse(body).album
-        })
-        .catch(e => e);
+    return requestGet(url, option).album;
 };
 
 
@@ -225,6 +188,7 @@ export default {
     getTopSongList,
     song,
     getMp3Url,
+    getMp3UrlById,
     search,
     lrc,
     playLists,
