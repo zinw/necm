@@ -7,7 +7,7 @@ class Ui {
     constructor() {
         this.screen = blessed.screen({
             debug: true,
-            warnings: true,
+            warnings: false,
             dockBorders: true,
             smartCSR: true,
             fullUnicode: true,
@@ -32,7 +32,7 @@ class Ui {
 
         // Quit on Escape, q, or Control-C.
         this.screen.key(['escape', 'q', 'C-c'], (ch, key) => {
-            this.screen.destroy();
+            process.exit();
         });
 
         // default focus
