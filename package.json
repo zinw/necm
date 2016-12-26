@@ -28,8 +28,7 @@
   "dependencies": {
     "sync-request": "*",
     "blessed": "*",
-    "lame": "*",
-    "audio-speaker": "*"
+    "mpg123": "*"
   },
   "devDependencies": {
     "babel-cli": "*",
