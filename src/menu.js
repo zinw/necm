@@ -45,9 +45,10 @@ class Menu extends Ui {
         this.screen.render();
         this.songIdList = this.playList.map((s) => s.id);
         let player = new Player(this.songIdList);
-        this.list.once('select', (item, index) => {
+        this.list.on('select', (item, index) => {
             player.play(index)
         });
+        player.on('playing', index => this.list.select(index));
     }
 
     initTopList() {
