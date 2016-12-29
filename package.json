@@ -1,13 +1,12 @@
 {
   "name": "necm",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "NetEase Cloud Music",
-  "main": "index.js",
+  "main": "dist/necm.js",
   "files": [
     "bin",
     "dist",
-    "src",
-    "index.js"
+    "src"
   ],
   "scripts": {
     "postinstall": "node dist/postinstall.js",
