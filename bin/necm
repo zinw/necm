@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-var NECM = require('necm');
+var NECM = require('..').default;
 new NECM();
