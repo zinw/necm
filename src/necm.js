@@ -54,9 +54,9 @@ class NECM extends Ui {
     initTopList() {
         this.list.setItems(api.getTopListNames());
         this.screen.render();
-        this.list.once('select', async(item, index) => {
+        this.list.once('select', (item, index) => {
             let title = ` ${item.getText().split('.').slice(-1)[0].trim()} `;
-            await this.topListDo(index);
+            this.topListDo(index);
             this.list.setLabel(title);
             this.screen.render();
         });
