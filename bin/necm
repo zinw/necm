@@ -1,2 +1,4 @@
 #!/usr/bin/env node
 
+var NECM = require('necm');
+new NECM();
