@@ -26,6 +26,7 @@ class Player extends EventEmitter {
         }
         this.emit('playing', index);
         let url = api.getMp3UrlById(this._list[index]);
+        this.player.removeAllListeners('end');
         this.player.play(url);
         this.player.once('end', () => {
             this.play(index + 1)
