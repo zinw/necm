@@ -91,9 +91,9 @@ const encodeId = (dfsId) => {
  */
 const getMp3Url = (song) => {
     let music = {};
-    if (song.hasOwnProperty('hMusic')) {
+    if (song.hMusic) {
         music = song.hMusic
-    } else if (song.hasOwnProperty('mMusic')) {
+    } else if (song.mMusic) {
         music = song.mMusic
     } else {
         return song.mp3Url
