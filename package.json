@@ -1,9 +1,16 @@
 {
   "name": "necm",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "NetEase Cloud Music",
   "main": "index.js",
+  "files": [
+    "bin",
+    "dist",
+    "src",
+    "index.js"
+  ],
   "scripts": {
+    "postinstall": "node dist/postinstall.js",
     "build": "babel src -d dist",
     "test": "jest"
   },
@@ -28,6 +35,7 @@
   "dependencies": {
     "sync-request": "*",
     "blessed": "*",
+    "colors": "*",
     "mpg123": "*"
   },
   "devDependencies": {
