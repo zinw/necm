@@ -12,7 +12,13 @@ class NECM extends Ui {
         this.mainMenuList = [
             ['排行榜', this.initTopList]
         ];
-        this.initMainMenu()
+        this.initMainMenu();
+        let percent = 0;
+        setInterval(() => {
+            this.playBox.setPercent(percent++);
+            this.screen.render();
+            if (percent >= 100) percent = 0
+        }, 200);
     }
 
     getMainMenuListNames() {

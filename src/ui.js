@@ -2,6 +2,39 @@
  * Created by Zinway on 2016/12/17.
  */
 import blessed from 'blessed'
+import {gauge} from 'blessed-contrib'
+
+class PlayBox extends gauge {
+    constructor(options) {
+        super(options);
+    }
+
+    setPercent(percent) {
+
+        if (!this.ctx) {
+            throw "error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()"
+        }
+
+        let c = this.ctx;
+
+        c.strokeStyle = this.options.stroke; //default is 'magenta'
+        c.fillStyle = this.options.fill; //default is 'white'
+
+        c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
+        if (percent < 1.001) {
+            percent = percent * 100;
+        }
+        let width = percent / 100 * (this.canvasSize.width - 3);
+        c.fillRect(1, 0, width, 0);
+
+        let textX = this.canvasSize.width - 12;
+        if (width < textX) {
+            c.strokeStyle = 'normal'
+        }
+
+        if (this.options.showLabel) c.fillText('00:00/12:34', textX, 0)
+    }
+}
 
 class Ui {
     constructor() {
@@ -16,6 +49,7 @@ class Ui {
 
         this.initListWidget();
         this.initSearchWidget();
+        this.initPlayBox();
 
         this.screen.on('element focus', (cur, old) => {
             if (old.border) old.style.border.fg = 'default';
@@ -125,6 +159,19 @@ class Ui {
         });
 
         this.screen.append(this.searchBox);
+    }
+
+    initPlayBox() {
+        this.playBox = new PlayBox({
+            label: ' playing... ',
+            border: 'line',
+            width: '50%',
+            height: 3,
+            left: 'center',
+            top: '75%',
+            stroke: 'green'
+        });
+        this.screen.append(this.playBox);
     }
 }
 
