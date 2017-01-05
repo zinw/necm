@@ -9,7 +9,7 @@ class PlayBox extends gauge {
         super(options);
     }
 
-    setPercent(percent) {
+    doProcessing(percent, current_time, total_time) {
 
         if (!this.ctx) {
             throw "error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()"
@@ -24,15 +24,13 @@ class PlayBox extends gauge {
         if (percent < 1.001) {
             percent = percent * 100;
         }
-        let width = percent / 100 * (this.canvasSize.width - 3);
-        c.fillRect(1, 0, width, 0);
+        let width = percent / 100 * (this.canvasSize.width - 2);
+        c.fillRect(1, 1, width, 0);
 
         let textX = this.canvasSize.width - 12;
-        if (width < textX) {
-            c.strokeStyle = 'normal'
-        }
 
-        if (this.options.showLabel) c.fillText('00:00/12:34', textX, 0)
+        c.strokeStyle = 'normal';
+        if (this.options.showLabel) c.fillText(`${current_time}/${total_time}`, textX, 0)
     }
 }
 
@@ -166,7 +164,7 @@ class Ui {
             label: ' playing... ',
             border: 'line',
             width: '50%',
-            height: 3,
+            height: 4,
             left: 'center',
             top: '75%',
             stroke: 'green'

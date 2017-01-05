@@ -5,6 +5,7 @@
 import EventEmitter from 'events'
 import MpgPlayer from 'mpg123'
 import api from './api'
+import {toMMSS} from './util'
 
 /**
  * [Class Player]
@@ -31,6 +32,16 @@ class Player extends EventEmitter {
         this.player.once('end', () => {
             this.play(index + 1)
         });
+        this.player.on('frame', d => {
+            let [c_num, r_num, c_time, r_time] = d;
+            c_time = Number.parseFloat(c_time);
+            r_time = Number.parseFloat(r_time);
+            let t_time = c_time + r_time;
+            let percent = Math.round((c_time / t_time) * 10000) / 100;
+            let current_time = toMMSS(c_time);
+            let total_time = toMMSS(t_time);
+            this.emit('processing', percent, current_time, total_time);
+        })
     }
 }
 

@@ -13,12 +13,6 @@ class NECM extends Ui {
             ['排行榜', this.initTopList]
         ];
         this.initMainMenu();
-        let percent = 0;
-        setInterval(() => {
-            this.playBox.setPercent(percent++);
-            this.screen.render();
-            if (percent >= 100) percent = 0
-        }, 200);
     }
 
     getMainMenuListNames() {
@@ -55,6 +49,10 @@ class NECM extends Ui {
             player.play(index)
         });
         player.on('playing', index => this.list.select(index));
+        player.on('processing', (p, c, t) => {
+            this.playBox.doProcessing(p, c, t);
+            this.screen.render();
+        })
     }
 
     initTopList() {

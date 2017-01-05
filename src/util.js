@@ -29,9 +29,18 @@ const requestPost = (url, options) => {
     return JSON.parse(request('POST', url, options).getBody('utf8'))
 };
 
+const toMMSS = sec => {
+    let m = ~~(sec / 60);
+    m = m < 10 ? `0${m}` : m;
+    let s = Number.parseInt(sec % 60);
+    s = s < 10 ? `0${s}` : s;
+    return `${m}:${s}`
+};
+
 export {
     deepCopy,
     requestGet,
     requestGetRaw,
-    requestPost
+    requestPost,
+    toMMSS
 }
