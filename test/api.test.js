@@ -10,7 +10,8 @@ describe('API测试', () => {
     })
 
     it('api.getSongUrl测试', () => {
-        expect(api.getSongUrl(31654455).indexOf('http')).toBe(0)
+        let d = api.getSongUrl(31654455)
+        expect(d.indexOf('http')).toBe(0)
     })
 
     it('api.song测试', () => {
