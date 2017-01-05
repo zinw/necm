@@ -15,7 +15,7 @@ NetEase Cloud Music
 
 ## 依赖
 
-由于写改模块时，试用node.js版的mpg123（[node-speaker](https://github.com/TooTallNate/node-speaker/#audio-backend-selection)）遇到些许瑕疵问题，最终选用了原生编译安装的mpg123，基于`mpg123 -R`，所以使用该模块需要系统中预先装有`mpg123`。安装方法如下：
+由于在写本模块时，试用node.js版的mpg123（[node-speaker](https://github.com/TooTallNate/node-speaker/#audio-backend-selection)）遇到些许瑕疵问题，最终选用了原生编译安装的mpg123，基于`mpg123 -R`，所以使用该模块需要系统中预先装有`mpg123`。安装方法如下：
 
 #### Ubuntu/Debian
 ```
