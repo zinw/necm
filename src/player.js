@@ -26,12 +26,14 @@ class Player extends EventEmitter {
             return this
         }
         this.emit('playing', index);
-        let url = api.getMp3UrlById(this._list[index]);
+        let url = api.getSongUrl(this._list[index]);
+        if (!url) url = api.getMp3UrlById(this._list[index]);
         this.player.removeAllListeners('end');
         this.player.play(url);
         this.player.once('end', () => {
             this.play(index + 1)
         });
+        this.player.removeAllListeners('frame');
         this.player.on('frame', d => {
             let [c_num, r_num, c_time, r_time] = d;
             c_time = Number.parseFloat(c_time);

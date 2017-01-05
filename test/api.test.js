@@ -9,6 +9,10 @@ describe('API测试', () => {
         expect(d[0].name).toBe('Victory')
     })
 
+    it('api.getSongUrl测试', () => {
+        expect(api.getSongUrl(31654455).indexOf('http')).toBe(0)
+    })
+
     it('api.song测试', () => {
         let d = api.song('31654455')
         expect(d.name).toBe('Victory')

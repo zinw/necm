@@ -5,6 +5,7 @@ const origin = 'http://music.163.com';
 
 const globalOption = {
     headers: {
+        'Connection': 'keep-alive',
         'Origin': origin,
         'Referer': origin,
         'Content-Type': 'application/x-www-form-urlencoded'

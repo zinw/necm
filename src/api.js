@@ -1,10 +1,9 @@
 /**
  * Created by Zinway on 2016/12/9.
  */
-import crypto from 'crypto'
 import querystring from 'querystring'
 import {origin, globalOption} from './config'
-import {deepCopy, requestGet, requestGetRaw, requestPost} from './util'
+import {deepCopy, requestGet, requestGetRaw, requestPost, encodeId, aesRsaEncrypt} from './util'
 
 
 // 歌曲榜单地址
@@ -46,6 +45,25 @@ const getTopSongList = (index = 0) => {
 };
 
 /**
+ * [新版API]根据id获取歌曲
+ * @param {number} songId 歌曲id
+ * @param {number} bitRate 歌曲比特率，默认320kbps
+ */
+const getSongUrl = (songId, bitRate = 320000) => {
+    const option = deepCopy(globalOption);
+    let csrf = '';
+    const url = `${origin}/weapi/song/enhance/player/url?csrf_token=${csrf}`;
+    const data = JSON.stringify({
+        ids: [songId],
+        br: bitRate,
+        csrf_token: csrf,
+    });
+    const body = querystring.stringify(aesRsaEncrypt(data));
+    Object.assign(option, {body});
+    return requestPost(url, option).data[0].url
+};
+
+/**
  * 根据id获取歌曲
  * @param {number} id 歌曲id
  */
@@ -53,36 +71,6 @@ const song = (id) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/api/song/detail?ids=%5B${id}%5d`;
     return requestGet(url, option).songs[0]
-};
-
-/**
- * 字符串转为TypedArray对象
- * @param {string} str
- * @returns {Uint8Array}
- */
-function str2ta(str) {
-    let buf = new ArrayBuffer(str.length);
-    let bufView = new Uint8Array(buf);
-    str.split('').map((s, i) => {
-        bufView[i] = s.charCodeAt()
-    });
-    return bufView;
-}
-
-/**
- * 根据dfsId获取mp3Url加密字段
- * @param {string} dfsId 歌曲id
- */
-const encodeId = (dfsId) => {
-    let a1 = str2ta('3go8&$8*3*3h0k(2)2'),
-        a2 = str2ta(dfsId),
-        a1l = a1.length;
-    a2.map((c, i) => {
-        a2[i] = c ^ a1[i % a1l]
-    });
-    let m = crypto.createHash('md5');
-    m.update(a2);
-    return m.digest().toString('base64').replace(/\//g, '_').replace(/\+/g, '-');
 };
 
 /**
@@ -186,6 +174,7 @@ const albums = (id) => {
 export default {
     getTopListNames,
     getTopSongList,
+    getSongUrl,
     song,
     getMp3Url,
     getMp3UrlById,
