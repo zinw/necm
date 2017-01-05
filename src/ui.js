@@ -24,7 +24,7 @@ class PlayBox extends gauge {
         if (percent < 1.001) {
             percent = percent * 100;
         }
-        let width = percent / 100 * (this.canvasSize.width - 2);
+        let width = percent / 100 * (this.canvasSize.width - 3);
         c.fillRect(1, 1, width, 0);
 
         let textX = this.canvasSize.width - 12;
