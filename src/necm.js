@@ -13,6 +13,7 @@ class NECM extends Ui {
             ['排行榜', this.initTopList]
         ];
         this.initMainMenu();
+        this.list.key(['m'], () => this.initMainMenu());
     }
 
     getMainMenuListNames() {
@@ -26,6 +27,7 @@ class NECM extends Ui {
     initMainMenu() {
         this.list.setItems(this.getMainMenuListNames());
         this.screen.render();
+        this.list.removeAllListeners('select');
         this.list.once('select', (item, index) => {
             this.list.setLabel(` ${item.getText().split('.').slice(-1)[0].trim()} `);
             this.mainMenuListDo(index);
@@ -45,10 +47,25 @@ class NECM extends Ui {
         this.screen.render();
         this.songIdList = this.playList.map((s) => s.id);
         let player = new Player(this.songIdList);
-        this.list.on('select', (item, index) => {
-            player.play(index)
+        const onSelect = () => {
+            this.list.removeAllListeners('select');
+            this.list.on('select', (item, index) => {
+                this.rTitle = this.list._label.content;
+                this.rItems = this.songNames;
+                player.play(index)
+            });
+        };
+        onSelect();
+        this.list.key(['space'], () => player.pause());
+        player.on('playing', index => {
+            if (this.rTitle != this.list._label.content) {
+                this.list.setLabel(this.rTitle);
+                this.list.setItems(this.rItems);
+                this.screen.render();
+                onSelect();
+            }
+            this.list.select(index);
         });
-        player.on('playing', index => this.list.select(index));
         player.on('processing', (p, c, t) => {
             this.playBox.doProcessing(p, c, t);
             this.screen.render();
@@ -58,6 +75,7 @@ class NECM extends Ui {
     initTopList() {
         this.list.setItems(api.getTopListNames());
         this.screen.render();
+        this.list.removeAllListeners('select');
         this.list.once('select', (item, index) => {
             let title = ` ${item.getText().split('.').slice(-1)[0].trim()} `;
             this.topListDo(index);

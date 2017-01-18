@@ -28,8 +28,8 @@ class Player extends EventEmitter {
         this.emit('playing', index);
         let url = api.getSongUrl(this._list[index]);
         if (!url) url = api.getMp3UrlById(this._list[index]);
-        this.player.removeAllListeners('end');
         this.player.play(url);
+        this.player.removeAllListeners('end');
         this.player.once('end', () => {
             this.play(index + 1)
         });
@@ -44,6 +44,10 @@ class Player extends EventEmitter {
             let total_time = toMMSS(t_time);
             this.emit('processing', percent, current_time, total_time);
         })
+    }
+
+    pause() {
+        this.player.pause()
     }
 }
 
