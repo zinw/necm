@@ -1,6 +1,6 @@
 {
   "name": "necm",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "NetEase Cloud Music",
   "main": "dist/necm.js",
   "files": [

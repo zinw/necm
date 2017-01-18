@@ -8,12 +8,14 @@ import Player from './player'
 class NECM extends Ui {
     constructor() {
         super();
+        this.player = new Player();
         this._bind('initTopList', 'topListDo');
         this.mainMenuList = [
             ['排行榜', this.initTopList]
         ];
         this.initMainMenu();
         this.list.key(['m'], () => this.initMainMenu());
+        this.list.key(['space'], () => this.player.pause());
     }
 
     getMainMenuListNames() {
@@ -46,18 +48,20 @@ class NECM extends Ui {
         this.list.setItems(this.songNames);
         this.screen.render();
         this.songIdList = this.playList.map((s) => s.id);
-        let player = new Player(this.songIdList);
         const onSelect = () => {
             this.list.removeAllListeners('select');
             this.list.on('select', (item, index) => {
+                if (this.player._list != this.songIdList) {
+                    this.player.setPlayList(this.songIdList)
+                }
                 this.rTitle = this.list._label.content;
                 this.rItems = this.songNames;
-                player.play(index)
+                this.player.play(index)
             });
         };
         onSelect();
-        this.list.key(['space'], () => player.pause());
-        player.on('playing', index => {
+        this.player.removeAllListeners('playing');
+        this.player.on('playing', index => {
             if (this.rTitle != this.list._label.content) {
                 this.list.setLabel(this.rTitle);
                 this.list.setItems(this.rItems);
@@ -66,7 +70,8 @@ class NECM extends Ui {
             }
             this.list.select(index);
         });
-        player.on('processing', (p, c, t) => {
+        this.player.removeAllListeners('processing');
+        this.player.on('processing', (p, c, t) => {
             this.playBox.doProcessing(p, c, t);
             this.screen.render();
         })

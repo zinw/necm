@@ -12,9 +12,13 @@ import {toMMSS} from './util'
  * @param {Array} song_id_list 歌曲ID列表
  */
 class Player extends EventEmitter {
-    constructor(song_id_list) {
+    constructor() {
         super();
         this.player = new MpgPlayer();
+        this._list = [];
+    }
+
+    setPlayList(song_id_list) {
         this._list = song_id_list instanceof Array ? song_id_list : [];
     }
 
