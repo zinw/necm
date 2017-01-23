@@ -16,6 +16,7 @@ class NECM extends Ui {
         this.initMainMenu();
         this.list.key(['m'], () => this.initMainMenu());
         this.list.key(['space'], () => this.player.pause());
+        this.list.key(['p'], () => this.renderPlayList());
     }
 
     getMainMenuListNames() {
@@ -27,6 +28,7 @@ class NECM extends Ui {
     }
 
     initMainMenu() {
+        this.list.setLabel(' 网易云音乐 ');
         this.list.setItems(this.getMainMenuListNames());
         this.screen.render();
         this.list.removeAllListeners('select');
@@ -52,7 +54,9 @@ class NECM extends Ui {
             this.list.removeAllListeners('select');
             this.list.on('select', (item, index) => {
                 if (this.player._list != this.songIdList) {
-                    this.player.setPlayList(this.songIdList)
+                    this._title = this.title;
+                    this._songNames = this.songNames;
+                    this.player.setPlayList(this.songIdList);
                 }
                 this.rTitle = this.list._label.content;
                 this.rItems = this.songNames;
@@ -77,14 +81,23 @@ class NECM extends Ui {
         })
     }
 
+    renderPlayList() {
+        if (this._title && this._songNames && this.player._index) {
+            this.list.setLabel(this._title);
+            this.list.setItems(this._songNames);
+            this.list.select(this.player._index);
+            this.screen.render();
+        }
+    }
+
     initTopList() {
         this.list.setItems(api.getTopListNames());
         this.screen.render();
         this.list.removeAllListeners('select');
         this.list.once('select', (item, index) => {
-            let title = ` ${item.getText().split('.').slice(-1)[0].trim()} `;
+            this.title = ` ${item.getText().split('.').slice(-1)[0].trim()} `;
             this.topListDo(index);
-            this.list.setLabel(title);
+            this.list.setLabel(this.title);
             this.screen.render();
         });
     }

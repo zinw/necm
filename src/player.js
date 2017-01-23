@@ -16,26 +16,33 @@ class Player extends EventEmitter {
         super();
         this.player = new MpgPlayer();
         this._list = [];
+        this._ll = this._list.length;
+        this._index = 0;
     }
 
     setPlayList(song_id_list) {
         this._list = song_id_list instanceof Array ? song_id_list : [];
+        this._ll = this._list.length;
     }
 
     play(index = 0) {
-        if (typeof index !== 'number' || index < 0) {
-            return this
-        } else if (index >= this._list.length) {
-            this.emit('finish', 'Playlist is over.');
+        if (this._ll < 1 || typeof index !== 'number' || index < 0) {
             return this
         }
-        this.emit('playing', index);
+        this._index = index;
+        this._next = (this._index + 1) % this._ll;
+        this.emit('playing', this._index);
         let url = api.getSongUrl(this._list[index]);
         if (!url) url = api.getMp3UrlById(this._list[index]);
-        this.player.play(url);
+        try {
+            this.player.play(url);
+        }
+        catch (e) {
+            this.play(this._next)
+        }
         this.player.removeAllListeners('end');
         this.player.once('end', () => {
-            this.play(index + 1)
+            this.play(this._next)
         });
         this.player.removeAllListeners('frame');
         this.player.on('frame', d => {
