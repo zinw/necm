@@ -3,7 +3,7 @@
  */
 import querystring from 'querystring'
 import {origin, globalOption} from './config'
-import {deepCopy, requestGet, requestGetRaw, requestPost, encodeId, aesRsaEncrypt} from './util'
+import {deepCopy, requestGet, requestGetRaw, requestPost, requestPostRaw, encodeId, aesRsaEncrypt, MD5} from './util'
 
 
 // 歌曲榜单地址
@@ -170,6 +170,60 @@ const albums = (id) => {
     return requestGet(url, option).album;
 };
 
+/**
+ * 登陆
+ * @param {string} username 用户名
+ * @param {string} password 密码
+ * @return {Object}
+ */
+const login = (username, password) => {
+    if (/^1[34578]\d{9}$/.test(username)) {
+        return phoneLogin(username, password)
+    }
+    const option = deepCopy(globalOption);
+    const url = `${origin}/weapi/login`;
+    const data = JSON.stringify({
+        username: username,
+        password: MD5(password),
+        rememberLogin: true,
+    });
+    const body = querystring.stringify(aesRsaEncrypt(data));
+    Object.assign(option, {body});
+    const r = requestPostRaw(url, option);
+    const rBody = JSON.parse(r.getBody('utf8'));
+    if (rBody.code != 200) {
+        return rBody.msg;
+    } else {
+        const cookies = r.headers['set-cookie'];
+        return querystring.parse(cookies.filter(c => /^__csrf=/.test(c))[0], '; ')
+    }
+};
+
+/**
+ * 手机登陆
+ * @param {string} phone 手机号
+ * @param {string} password 密码
+ * @return {Object}
+ */
+const phoneLogin = (phone, password) => {
+    const option = deepCopy(globalOption);
+    const url = `${origin}/weapi/login/cellphone`;
+    const data = JSON.stringify({
+        phone: phone,
+        password: MD5(password),
+        rememberLogin: true,
+    });
+    const body = querystring.stringify(aesRsaEncrypt(data));
+    Object.assign(option, {body});
+    const r = requestPostRaw(url, option);
+    const rBody = JSON.parse(r.getBody('utf8'));
+    if (rBody.code != 200) {
+        return rBody.msg;
+    } else {
+        const cookies = r.headers['set-cookie'];
+        return querystring.parse(cookies.filter(c => /^__csrf=/.test(c))[0], '; ')
+    }
+};
 
 export default {
     getTopListNames,
@@ -182,5 +236,6 @@ export default {
     lrc,
     playLists,
     artistAlbums,
-    albums
+    albums,
+    login,
 }

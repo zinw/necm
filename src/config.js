@@ -12,4 +12,10 @@ const globalOption = {
     }
 };
 
-export {origin, globalOption}
+const cookieFile = `${process.env.HOME}/.necmCookie.json`;
+
+export {
+    origin,
+    globalOption,
+    cookieFile,
+}

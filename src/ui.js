@@ -48,12 +48,9 @@ class Ui {
         this.initListWidget();
         this.initSearchWidget();
         this.initPlayBox();
+        this.initLoginForm();
 
-        this.screen.on('element focus', (cur, old) => {
-            if (old.border) old.style.border.fg = 'default';
-            if (cur.border) cur.style.border.fg = 'green';
-            this.screen.render();
-        });
+        this.renderFocus();
 
         this.screen.key(['tab'], (ch, key) => {
             this.screen.focusNext();
@@ -75,6 +72,14 @@ class Ui {
 
     _bind(...methods) {
         methods.forEach((method) => this[method] = this[method].bind(this));
+    }
+
+    renderFocus() {
+        this.screen.on('element focus', (cur, old) => {
+            if (old.border) old.style.border.fg = 'default';
+            if (cur.border) cur.style.border.fg = 'green';
+            this.screen.render();
+        });
     }
 
     initListWidget() {
@@ -170,6 +175,177 @@ class Ui {
             stroke: 'green'
         });
         this.screen.append(this.playBox);
+    }
+
+    initLoginForm() {
+        this.loginForm = blessed.form({
+            label: ' 请登陆 => ',
+            mouse: true,
+            keys: true,
+            width: '50%',
+            height: '50%',
+            top: 'center',
+            left: 'center',
+            border: 'line',
+            hidden: true,
+            style: {
+                fg: 'blue',
+                border: {
+                    fg: 'green'
+                }
+            }
+        });
+
+        this.loginForm.on('show', () => {
+            this.screen.removeAllListeners('element focus');
+            this.screen.append(this.loginForm);
+            this.loginForm.focus();
+            this.screen.render();
+        });
+
+        this.loginForm.on('hide', () => {
+            this.renderFocus();
+            this.screen.remove(this.loginForm);
+            this.list.focus();
+            this.screen.render();
+        });
+
+        this.loginForm.on('cancel', () => {
+            this.loginForm.hide();
+        });
+
+        const usernameLabel = blessed.text({
+            parent: this.loginForm,
+            style: {
+                fg: 'white',
+            },
+            height: 1,
+            width: 8,
+            left: '50%-16',
+            top: 3,
+            content: '用户名：'
+        });
+
+        const username = blessed.textbox({
+            parent: this.loginForm,
+            mouse: true,
+            keys: true,
+            padding: {
+                left: 1,
+                right: 1,
+            },
+            style: {
+                fg: 'white',
+                bg: 'blue'
+            },
+            height: 1,
+            width: 22,
+            left: '50%-8',
+            top: 3,
+            name: 'username'
+        });
+
+        username.on('focus', () => username.readInput());
+
+        const passwordLabel = blessed.text({
+            parent: this.loginForm,
+            style: {
+                fg: 'white',
+            },
+            height: 1,
+            width: 8,
+            left: '50%-16',
+            top: 6,
+            content: '密  码：'
+        });
+
+        const password = blessed.textbox({
+            parent: this.loginForm,
+            mouse: true,
+            keys: true,
+            censor: true,
+            padding: {
+                left: 1,
+                right: 1,
+            },
+            style: {
+                fg: 'white',
+                bg: 'blue'
+            },
+            height: 1,
+            width: 22,
+            left: '50%-8',
+            top: 6,
+            name: 'password'
+        });
+
+        password.on('focus', () => password.readInput());
+
+        this.loginTipsLabel = blessed.text({
+            parent: this.loginForm,
+            align: 'center',
+            style: {
+                fg: 'red',
+            },
+            height: 1,
+            left: '50%-16',
+            top: 9,
+            content: ''
+        });
+
+        const submit = blessed.button({
+            parent: this.loginForm,
+            mouse: true,
+            keys: true,
+            shrink: true,
+            padding: {
+                left: 1,
+                right: 1
+            },
+            left: '50%-10',
+            bottom: 3,
+            name: 'submit',
+            content: '登陆',
+            style: {
+                fg: 'white',
+                bg: 'blue',
+                hover: {
+                    bg: 'red'
+                },
+                focus: {
+                    bg: 'red'
+                }
+            }
+        });
+
+        submit.on('press', () => this.loginForm.submit());
+
+        const cancel = blessed.button({
+            parent: this.loginForm,
+            mouse: true,
+            keys: true,
+            shrink: true,
+            padding: {
+                left: 1,
+                right: 1
+            },
+            left: '50%+4',
+            bottom: 3,
+            name: 'submit',
+            content: '取消',
+            style: {
+                fg: 'white',
+                bg: 'blue',
+                hover: {
+                    bg: 'red'
+                },
+                focus: {
+                    bg: 'red'
+                }
+            }
+        });
+
+        cancel.on('press', () => this.loginForm.cancel());
     }
 }
 

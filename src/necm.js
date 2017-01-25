@@ -4,10 +4,13 @@
 import Ui from './ui'
 import api from './api'
 import Player from './player'
+import {cookieFile} from './config'
+import fs from 'fs'
 
 class NECM extends Ui {
     constructor() {
         super();
+        this.loadCookie(cookieFile);
         this.player = new Player();
         this._bind('initTopList', 'topListDo');
         this.mainMenuList = [
@@ -16,7 +19,39 @@ class NECM extends Ui {
         this.initMainMenu();
         this.list.key(['m'], () => this.initMainMenu());
         this.list.key(['space'], () => this.player.pause());
-        this.list.key(['p'], () => this.renderPlayList());
+        this.list.key(['p'], () => this.renderPlayingList());
+        this.screen.key(['a'], () => {
+            this.handleLogin();
+        });
+    }
+
+    loadCookie(file) {
+        if (!fs.existsSync(file)) {
+            this.__csrf = '';
+        } else {
+            try {
+                const cookie = JSON.parse(fs.readFileSync(file));
+                if (!cookie.Expires) {
+                    this.__csrf = '';
+                } else {
+                    const expires = new Date(cookie.Expires);
+                    if (expires - (new Date()) < 86400 * 1000) {
+                        this.__csrf = '';
+                    } else {
+                        this.__csrf = cookie.__csrf;
+                    }
+                }
+            } catch (e) {
+                this.__csrf = '';
+            }
+        }
+    }
+
+    saveCookie(cookie, file) {
+        if (!fs.existsSync(file)) fs.closeSync(fs.openSync(file, 'w'));
+        fs.writeFile(file, JSON.stringify(cookie, ['__csrf', 'Expires'], 2), e => {
+            if (e) this.screen.debugLog.log(e)
+        });
     }
 
     getMainMenuListNames() {
@@ -81,8 +116,8 @@ class NECM extends Ui {
         })
     }
 
-    renderPlayList() {
-        if (this._title && this._songNames && this.player._index) {
+    renderPlayingList() {
+        if (this._title && this._songNames && this.player._index > -1) {
             this.list.setLabel(this._title);
             this.list.setItems(this._songNames);
             this.list.select(this.player._index);
@@ -99,6 +134,26 @@ class NECM extends Ui {
             this.topListDo(index);
             this.list.setLabel(this.title);
             this.screen.render();
+        });
+    }
+
+    handleLogin() {
+        this.loginForm.show();
+        const tip = content => {
+            this.loginTipsLabel.setContent(content);
+            this.screen.render();
+        };
+        this.loginForm.on('submit', data => {
+            const {username, password} = data;
+            if (!username && !password) return tip('请输入用户名和密码。');
+            if (!username) return tip('请输入用户名。');
+            if (!password) return tip('请输入密码。');
+            const r = api.login(username, password);
+            if (typeof r === 'object' && r.__csrf) {
+                this.__csrf = r.__csrf;
+                this.saveCookie(r, cookieFile);
+                this.loginForm.hide();
+            }
         });
     }
 }

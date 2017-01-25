@@ -31,6 +31,10 @@ const requestPost = (url, options) => {
     return JSON.parse(request('POST', url, options).getBody('utf8'))
 };
 
+const requestPostRaw = (url, options) => {
+    return request('POST', url, options)
+};
+
 const toMMSS = sec => {
     let m = ~~(sec / 60);
     m = m < 10 ? `0${m}` : m;
@@ -130,6 +134,7 @@ export {
     requestGet,
     requestGetRaw,
     requestPost,
+    requestPostRaw,
     toMMSS,
     encodeId,
     MD5,
