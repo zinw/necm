@@ -19,8 +19,8 @@ describe('API测试', () => {
         expect(d).not.toBeNull()
     })
 
-    it('api.playLists测试', () => {
-        let d = api.playLists('1')
+    it('api.playList测试', () => {
+        let d = api.playList('1')
         expect(d.id).toBe(1)
     })
 
