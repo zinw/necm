@@ -3,7 +3,7 @@
  */
 
 import EventEmitter from 'events'
-import MpgPlayer from 'mpg123'
+import {MpgPlayer} from 'mpg123'
 import api from './api'
 import {toMMSS} from './util'
 
