@@ -1,6 +1,6 @@
 {
   "name": "necm",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "NetEase Cloud Music",
   "main": "dist/necm.js",
   "files": [
@@ -32,17 +32,17 @@
   },
   "homepage": "https://github.com/zinw/necm#readme",
   "dependencies": {
-    "sync-request": "*",
     "big-integer": "*",
     "blessed": "*",
     "blessed-contrib": "*",
     "colors": "*",
-    "mpg123": "*"
+    "mpg123": "*",
+    "sync-request": "*"
   },
   "devDependencies": {
     "babel-cli": "*",
-    "babel-preset-env": "*",
     "babel-jest": "*",
+    "babel-preset-env": "*",
     "jest-cli": "*"
   },
   "babel": {

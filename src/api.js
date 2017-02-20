@@ -47,11 +47,11 @@ const getTopSongList = (index = 0) => {
 /**
  * [新版API]根据id获取歌曲
  * @param {number} songId 歌曲id
+ * @param {string} csrf csrf_token
  * @param {number} bitRate 歌曲比特率，默认320kbps
  */
-const getSongUrl = (songId, bitRate = 320000) => {
+const getSongUrl = (songId, csrf = '', bitRate = 320000) => {
     const option = deepCopy(globalOption);
-    let csrf = '';
     const url = `${origin}/weapi/song/enhance/player/url?csrf_token=${csrf}`;
     const data = JSON.stringify({
         ids: [songId],
@@ -142,7 +142,7 @@ const lrc = (id, lv = -1) => {
  * 根据id获取歌单
  * @param {number} id 歌单id
  */
-const playLists = (id) => {
+const playList = (id) => {
     const option = deepCopy(globalOption);
     const url = `${origin}/api/playlist/detail?id=${id}`;
     return requestGet(url, option).result;
@@ -195,7 +195,9 @@ const login = (username, password) => {
         return rBody.msg;
     } else {
         const cookies = r.headers['set-cookie'];
-        return querystring.parse(cookies.filter(c => /^__csrf=/.test(c))[0], '; ')
+        let c = {};
+        cookies.map(s => Object.assign(c, querystring.parse(s, '; ')));
+        return c
     }
 };
 
@@ -221,8 +223,25 @@ const phoneLogin = (phone, password) => {
         return rBody.msg;
     } else {
         const cookies = r.headers['set-cookie'];
-        return querystring.parse(cookies.filter(c => /^__csrf=/.test(c))[0], '; ')
+        let c = {};
+        cookies.map(s => Object.assign(c, querystring.parse(s, '; ')));
+        return c
     }
+};
+
+const dailyRecommend = (csrf, u, offset = 0, limit = 20) => {
+    let option = deepCopy(globalOption);
+    option.headers.Cookie = querystring.stringify({MUSIC_U: u});
+    const url = `${origin}/weapi/v1/discovery/recommend/songs?csrf_token=${csrf}`;
+    const data = JSON.stringify({
+        csrf_token: csrf,
+        total: true,
+        offset: offset,
+        limit: limit,
+    });
+    const body = querystring.stringify(aesRsaEncrypt(data));
+    Object.assign(option, {body});
+    return requestPost(url, option).recommend
 };
 
 export default {
@@ -234,8 +253,9 @@ export default {
     getMp3UrlById,
     search,
     lrc,
-    playLists,
+    playList,
     artistAlbums,
     albums,
     login,
+    dailyRecommend,
 }
